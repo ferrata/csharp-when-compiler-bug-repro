@@ -3,63 +3,47 @@ using System.Linq;
 
 namespace when_compiler_bug
 {
-    internal interface IInputElement
+    internal interface IBaseInterface
     {
     }
 
-    internal class FrameworkElement : IInputElement
+    internal class ParentClass : IBaseInterface
     {
-        public object DataContext { get; set; }
+        public bool BoolProperty => false;
+
+        public bool DummyCondition() => false;
     }
 
-    internal class ListBox : FrameworkElement
+    internal class ClassA : ParentClass
     {
-        public List<object> SelectedItems { get; set; }
+        public List<object> ListProperty => new List<object>();
     }
 
-    internal class ListBoxItem : FrameworkElement
+    internal class Reproduce
     {
-    }
-
-    internal class FolderViewModel
-    {
-        public bool CanDelete { get; set; }
-        public object Folder { get; set; }
-    }
-
-    internal static class Reproduce
-    {
-        public static void Run(IInputElement inputElement)
+        public void Run(IBaseInterface baseInterface)
         {
-            switch (inputElement)
+            switch (baseInterface)
             {
-                case FrameworkElement { DataContext: FolderViewModel { CanDelete: true, Folder: { } } f2 }
-                    when ShouldCancel(f2):
+                case ParentClass { BoolProperty: false } c
+                    when c.DummyCondition():
                     // ...
                     break;
-                case ListBox box when box.SelectedItems.OfType<FolderViewModel>().Any(folder => folder.Folder != null):
+                case ClassA box when box.ListProperty.Any(_ => false):
                     // ...
                     break;
-                case ListBoxItem { DataContext: FolderViewModel { CanDelete: true, Folder: { } } }:
-                    // ...
-                    break;
-                case FrameworkElement { DataContext: FolderViewModel { CanDelete: true, Folder: { } } f2 }:
+                case ParentClass { BoolProperty: false }:
                     // ...
                     break;
             }
         }
-
-        private static bool ShouldCancel(params FolderViewModel[] folder)
-        {
-            return false;
-        }
     }
 
-    internal class Program
+    public class Program
     {
-        public void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Reproduce.Run(new ListBoxItem());
+            new Reproduce().Run(new ClassA());
         }
     }
 }
