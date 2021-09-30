@@ -1,5 +1,5 @@
 # csharp-when-compiler-bug-repro
-Reproduces a bug with `switch` / `when` statements
+Reproduces [the bug](https://github.com/dotnet/roslyn/issues/48493) with `switch` / `when` statements
 
 
 Compiler version:
