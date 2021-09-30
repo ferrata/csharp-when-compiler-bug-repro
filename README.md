@@ -2,6 +2,14 @@
 Reproduces a bug with `switch` / `when` statements
 
 
+Compiler version:
+
+```txt
+Microsoft (R) Visual C# Compiler version 3.11.0-4.21403.6 (ae1fff34)
+Copyright (C) Microsoft Corporation. All rights reserved.
+```
+
+
 Compiler error:
 
 ```txt
